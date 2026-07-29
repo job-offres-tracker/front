@@ -1,13 +1,10 @@
 import { useMemo, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
-import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
+import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
@@ -27,8 +24,8 @@ import { AppSnackbar } from '@src/components/AppSnackbar'
 import { ETATS_OFFRE, ETAT_LABELS, type EtatOffre } from '@src/models/offre'
 import type { Commune } from '@src/models/commune'
 import type { BrouillonOffre } from '@src/models/brouillonOffre'
+import { useRechercheCommune } from '@src/hooks/useRechercheCommune'
 import { useCreerOffre } from './useCreerOffre'
-import { useRechercheCommune } from './useRechercheCommune'
 import { useImporterOffre } from './useImporterOffre'
 
 interface FormulaireOffre {
@@ -159,19 +156,17 @@ export function OffreCreationPage() {
   }
 
   return (
-    <Box sx={{ minHeight: '100%', bgcolor: 'grey.50' }}>
-      <AppBar position="static" color="primary" enableColorOnDark>
-        <Toolbar>
-          <Button component={Link} to="/offres" color="inherit" startIcon={<ArrowBackIcon />} sx={{ mr: 2 }}>
+    <>
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 3 }}>
+          <Button component={Link} to="/offres" startIcon={<ArrowBackIcon />}>
             Retour à la liste
           </Button>
-          <Typography variant="h6" component="h1">
+          <Typography variant="h5" component="h1">
             Nouvelle offre
           </Typography>
-        </Toolbar>
-      </AppBar>
+        </Stack>
 
-      <Container maxWidth="md" sx={{ py: 4 }}>
         <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { sm: 'flex-start' } }}>
             <TextField
@@ -369,6 +364,6 @@ export function OffreCreationPage() {
 
       <AppSnackbar state={snackbar.state} onClose={snackbar.close} />
       <AppSnackbar state={snackbarImport.state} onClose={snackbarImport.close} />
-    </Box>
+    </>
   )
 }

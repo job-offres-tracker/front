@@ -18,33 +18,33 @@ export function getOffres(params: ConsulterOffresParams): Promise<PagedResponse<
   if (params.etat) {
     search.append('etats', params.etat)
   }
-  return request<PagedResponse<Offre>>(`/api/v1/offres?${search.toString()}`)
+  return request<PagedResponse<Offre>>(`/offres?${search.toString()}`)
 }
 
 export function getOffre(idExterne: string): Promise<Offre> {
-  return request<Offre>(`/api/v1/offres/${encodeURIComponent(idExterne)}`)
+  return request<Offre>(`/offres/${encodeURIComponent(idExterne)}`)
 }
 
 export function creerOffre(payload: CreerOffreRequest): Promise<Offre> {
-  return request<Offre>('/api/v1/offres', {
+  return request<Offre>('/offres', {
     method: 'POST',
     body: JSON.stringify(payload),
   })
 }
 
 export function mettreAJourEtat(payload: MettreAJourEtatRequest): Promise<void> {
-  return request<void>('/api/v1/offres/etat', {
+  return request<void>('/offres/etat', {
     method: 'PATCH',
     body: JSON.stringify(payload),
   })
 }
 
 export function synchroniser(): Promise<void> {
-  return request<void>('/api/v1/offres/synchroniser', { method: 'POST' })
+  return request<void>('/offres/synchroniser', { method: 'POST' })
 }
 
 export function importerOffre(url: string): Promise<BrouillonOffre> {
-  return request<BrouillonOffre>('/api/v1/offres/importer', {
+  return request<BrouillonOffre>('/offres/importer', {
     method: 'POST',
     body: JSON.stringify({ url }),
   })
