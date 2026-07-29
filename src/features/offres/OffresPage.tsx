@@ -9,7 +9,6 @@ import CircularProgress from '@mui/material/CircularProgress'
 import SyncIcon from '@mui/icons-material/Sync'
 import AddIcon from '@mui/icons-material/Add'
 import { Link, useNavigate } from 'react-router-dom'
-import { AppSnackbar } from '@src/components/AppSnackbar'
 import { EtatFilterBar } from './EtatFilterBar'
 import { OffresTable } from './OffresTable'
 import { BulkUpdateBar } from './BulkUpdateBar'
@@ -83,7 +82,7 @@ export function OffresPage() {
         </Stack>
       </Container>
 
-      <AppSnackbar state={snackbar.state} onClose={snackbar.close} />
+      {snackbar.notificationNode}
     </>
   )
 }

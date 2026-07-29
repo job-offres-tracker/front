@@ -20,7 +20,6 @@ import Tooltip from '@mui/material/Tooltip'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import DownloadIcon from '@mui/icons-material/Download'
-import { AppSnackbar } from '@src/components/AppSnackbar'
 import { formatDateCreation } from '@src/utils/formatDate'
 import { formatTailleFichier } from '@src/utils/formatFileSize'
 import { telechargerCv } from '@src/api/cvApi'
@@ -151,7 +150,7 @@ export function CvsPage() {
         onConfirm={handleConfirmerUpload}
       />
 
-      <AppSnackbar state={snackbar.state} onClose={snackbar.close} />
+      {snackbar.notificationNode}
     </Container>
   )
 }

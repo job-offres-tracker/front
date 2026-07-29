@@ -18,7 +18,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import type { SelectChangeEvent } from '@mui/material/Select'
 import { EtatChip } from '@src/components/EtatChip'
-import { AppSnackbar } from '@src/components/AppSnackbar'
 import { formatDateCreation } from '@src/utils/formatDate'
 import { ETATS_OFFRE, ETAT_LABELS, type EtatOffre } from '@src/models/offre'
 import { useOffreDetail } from './useOffreDetail'
@@ -147,7 +146,7 @@ export function OffreDetailPage() {
         )}
       </Container>
 
-      <AppSnackbar state={snackbar.state} onClose={snackbar.close} />
+      {snackbar.notificationNode}
     </>
   )
 }
