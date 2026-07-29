@@ -9,7 +9,6 @@ const COULEUR_PRIMAIRE: Record<PaletteMode, string> = {
 }
 
 // Couleur de police (titres, texte de tableau, corps de texte...) par mode.
-// Valeurs alignées sur les défauts MUI — à ajuster ici si besoin.
 const COULEUR_TEXTE: Record<PaletteMode, { primary: string; secondary: string }> = {
   light: { primary: 'rgba(0, 0, 0, 0.87)', secondary: 'rgba(0, 0, 0, 0.6)' },
   dark: { primary: '#e2f1de', secondary: '#b7c4b4' },
