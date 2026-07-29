@@ -1,7 +1,5 @@
 import DOMPurify from 'dompurify'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
@@ -35,24 +33,17 @@ export function OffreDetailPage() {
   }
 
   return (
-    <Box sx={{ minHeight: '100%', bgcolor: 'grey.50' }}>
-      <AppBar position="static" color="primary" enableColorOnDark>
-        <Toolbar>
-          <Button
-            color="inherit"
-            startIcon={<ArrowBackIcon />}
-            sx={{ mr: 2 }}
-            onClick={() => navigate(-1)}
-          >
+    <>
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 3 }}>
+          <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>
             Retour à la liste
           </Button>
-          <Typography variant="h6" component="h1">
+          <Typography variant="h5" component="h1">
             Détail de l'offre
           </Typography>
-        </Toolbar>
-      </AppBar>
+        </Stack>
 
-      <Container maxWidth="md" sx={{ py: 4 }}>
         {loading && (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
             <CircularProgress />
@@ -157,6 +148,6 @@ export function OffreDetailPage() {
       </Container>
 
       <AppSnackbar state={snackbar.state} onClose={snackbar.close} />
-    </Box>
+    </>
   )
 }

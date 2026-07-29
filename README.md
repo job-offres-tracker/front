@@ -4,7 +4,7 @@ Frontend React (Vite + TypeScript) du projet **job-offres-tracker** : une interf
 
 Ce document est destiné à un nouveau développeur qui découvre le projet : prérequis, configuration, lancement, et architecture.
 
-Ce frontend ne fonctionne pas seul : il consomme l'API REST exposée par le backend [`job-offres-tracker`](../job-offres-tracker), qui doit être démarré au préalable.
+Ce frontend ne fonctionne pas seul : il consomme l'API REST exposée par le backend [`job-offres-tracker`](../back), qui doit être démarré au préalable.
 
 ## Sommaire
 

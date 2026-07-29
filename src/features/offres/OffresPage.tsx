@@ -1,5 +1,3 @@
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
@@ -22,31 +20,28 @@ export function OffresPage() {
   const navigate = useNavigate()
 
   return (
-    <Box sx={{ minHeight: '100%', bgcolor: 'grey.50' }}>
-      <AppBar position="static" color="primary" enableColorOnDark>
-        <Toolbar>
-          <Typography variant="h6" component="h1" sx={{ flexGrow: 1 }}>
-            Suivi des offres d'emploi
-          </Typography>
-          <Button component={Link} to="/offres/nouvelle" variant="outlined" color="inherit" startIcon={<AddIcon />} sx={{ mr: 2 }}>
-            Nouvelle offre
-          </Button>
-          <Button
-            variant="outlined"
-            color="inherit"
-            startIcon={
-              synchronisation.enCours ? <CircularProgress size={16} color="inherit" /> : <SyncIcon />
-            }
-            onClick={synchronisation.onSynchroniser}
-            disabled={synchronisation.enCours}
-          >
-            Synchroniser
-          </Button>
-        </Toolbar>
-      </AppBar>
-
+    <>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Stack spacing={3}>
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Typography variant="h5" component="h1" sx={{ flexGrow: 1 }}>
+              Suivi des offres d'emploi
+            </Typography>
+            <Button component={Link} to="/offres/nouvelle" variant="outlined" startIcon={<AddIcon />}>
+              Nouvelle offre
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={
+                synchronisation.enCours ? <CircularProgress size={16} color="inherit" /> : <SyncIcon />
+              }
+              onClick={synchronisation.onSynchroniser}
+              disabled={synchronisation.enCours}
+            >
+              Synchroniser
+            </Button>
+          </Stack>
+
           <EtatFilterBar
             value={filtre.valeur}
             onChange={filtre.onChange}
@@ -89,6 +84,6 @@ export function OffresPage() {
       </Container>
 
       <AppSnackbar state={snackbar.state} onClose={snackbar.close} />
-    </Box>
+    </>
   )
 }
