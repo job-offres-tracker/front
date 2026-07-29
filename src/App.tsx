@@ -1,7 +1,9 @@
+import { useMemo } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { theme } from './theme'
+import { createAppTheme } from './theme'
+import { usePrefersDarkMode } from './hooks/usePrefersDarkMode'
 import { AppLayout } from './components/AppLayout'
 import { OffresPage } from './features/offres/OffresPage'
 import { OffreDetailPage } from './features/offre-detail/OffreDetailPage'
@@ -12,6 +14,9 @@ import { CvsPage } from './features/cvs/CvsPage'
 import { CvViewerPage } from './features/cv-viewer/CvViewerPage'
 
 function App() {
+  const prefersDark = usePrefersDarkMode()
+  const theme = useMemo(() => createAppTheme(prefersDark ? 'dark' : 'light'), [prefersDark])
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
