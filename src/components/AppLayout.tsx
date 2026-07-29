@@ -31,7 +31,7 @@ export function AppLayout() {
   })
 
   return (
-    <Box sx={{ minHeight: '100%', bgcolor: 'grey.50' }}>
+    <Box sx={{ minHeight: '100%', bgcolor: 'background.default' }}>
       <AppBar position="static" color="primary" enableColorOnDark>
         <Toolbar>
           <Typography variant="h6" component="span" sx={{ mr: 4 }}>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { messageErreur } from '@src/api/apiClient'
+import { AppSnackbar } from '@src/components/AppSnackbar'
 
 export interface SnackbarState {
   open: boolean
@@ -14,5 +15,7 @@ export function useSnackbar() {
   const showError = (err: unknown) => setState({ open: true, message: messageErreur(err), severity: 'error' })
   const close = () => setState((prev) => ({ ...prev, open: false }))
 
-  return { state, showSuccess, showError, close }
+  const notificationNode = <AppSnackbar state={state} onClose={close} />
+
+  return { showSuccess, showError, notificationNode }
 }

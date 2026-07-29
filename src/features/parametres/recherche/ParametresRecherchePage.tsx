@@ -13,7 +13,6 @@ import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import { useRechercheCommune } from '@src/hooks/useRechercheCommune'
-import { AppSnackbar } from '@src/components/AppSnackbar'
 import type { Commune } from '@src/models/commune'
 import { useParametresRecherche } from './useParametresRecherche'
 
@@ -180,7 +179,7 @@ export function ParametresRecherchePage() {
         </Paper>
       )}
 
-      <AppSnackbar state={snackbar.state} onClose={snackbar.close} />
+      {snackbar.notificationNode}
     </Container>
   )
 }

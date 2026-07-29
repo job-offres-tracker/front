@@ -20,7 +20,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ReplayIcon from '@mui/icons-material/Replay'
 import DownloadIcon from '@mui/icons-material/Download'
 import type { SelectChangeEvent } from '@mui/material/Select'
-import { AppSnackbar } from '@src/components/AppSnackbar'
 import { ETATS_OFFRE, ETAT_LABELS, type EtatOffre } from '@src/models/offre'
 import type { Commune } from '@src/models/commune'
 import type { BrouillonOffre } from '@src/models/brouillonOffre'
@@ -362,8 +361,8 @@ export function OffreCreationPage() {
         </Paper>
       </Container>
 
-      <AppSnackbar state={snackbar.state} onClose={snackbar.close} />
-      <AppSnackbar state={snackbarImport.state} onClose={snackbarImport.close} />
+      {snackbar.notificationNode}
+      {snackbarImport.notificationNode}
     </>
   )
 }

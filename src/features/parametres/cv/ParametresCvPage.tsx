@@ -7,7 +7,6 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
-import { AppSnackbar } from '@src/components/AppSnackbar'
 import { useParametresCv } from './useParametresCv'
 
 export function ParametresCvPage() {
@@ -54,7 +53,7 @@ export function ParametresCvPage() {
         </Paper>
       )}
 
-      <AppSnackbar state={snackbar.state} onClose={snackbar.close} />
+      {snackbar.notificationNode}
     </Container>
   )
 }
