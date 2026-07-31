@@ -23,7 +23,11 @@ interface EvenementDialogProps {
 }
 
 function dateAujourdhui(): string {
-  return new Date().toISOString().slice(0, 10)
+  const maintenant = new Date()
+  const annee = maintenant.getFullYear()
+  const mois = String(maintenant.getMonth() + 1).padStart(2, '0')
+  const jour = String(maintenant.getDate()).padStart(2, '0')
+  return `${annee}-${mois}-${jour}`
 }
 
 export function EvenementDialog({ open, evenement, saving, onCancel, onSubmit }: EvenementDialogProps) {
