@@ -10,8 +10,11 @@ import { OffreDetailPage } from './features/offre-detail/OffreDetailPage'
 import { OffreCreationPage } from './features/offre-creation/OffreCreationPage'
 import { ParametresRecherchePage } from './features/parametres/recherche/ParametresRecherchePage'
 import { ParametresCvPage } from './features/parametres/cv/ParametresCvPage'
+import { ParametresDocumentCandidaturePage } from './features/parametres/candidature-document/ParametresDocumentCandidaturePage'
 import { CvsPage } from './features/cvs/CvsPage'
 import { CvViewerPage } from './features/cv-viewer/CvViewerPage'
+import { CandidaturesPage } from './features/candidatures/CandidaturesPage'
+import { CandidatureDetailPage } from './features/candidature-detail/CandidatureDetailPage'
 
 function App() {
   const prefersDark = usePrefersDarkMode()
@@ -27,8 +30,11 @@ function App() {
             <Route path="/offres" element={<OffresPage />} />
             <Route path="/offres/nouvelle" element={<OffreCreationPage />} />
             <Route path="/offres/:idExterne" element={<OffreDetailPage />} />
+            <Route path="/candidatures" element={<CandidaturesPage />} />
+            <Route path="/candidatures/:id" element={<CandidatureDetailPage />} />
             <Route path="/parametres/recherche" element={<ParametresRecherchePage />} />
             <Route path="/parametres/cv" element={<ParametresCvPage />} />
+            <Route path="/parametres/document-candidature" element={<ParametresDocumentCandidaturePage />} />
             <Route path="/cvs" element={<CvsPage />} />
             <Route path="/cvs/:nomUnique" element={<CvViewerPage />} />
           </Route>

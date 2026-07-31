@@ -19,7 +19,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import type { SelectChangeEvent } from '@mui/material/Select'
 import { EtatChip } from '@src/components/EtatChip'
 import { formatDateCreation } from '@src/utils/formatDate'
-import { ETATS_OFFRE, ETAT_LABELS, type EtatOffre } from '@src/models/offre'
+import { ETATS_OFFRE, ETATS_POST_CANDIDATURE, ETAT_LABELS, type EtatOffre } from '@src/models/offre'
 import { useOffreDetail } from './useOffreDetail'
 
 export function OffreDetailPage() {
@@ -30,6 +30,12 @@ export function OffreDetailPage() {
   const handleEtatChange = (event: SelectChangeEvent) => {
     changerEtat(event.target.value as EtatOffre)
   }
+
+  // Une fois une candidature engagée (POSTULE/ENTRETIEN/ACCEPTE/RECALE), il n'est plus possible
+  // de revenir à NON_LU/LU (voir TransitionEtatInvalideException côté backend).
+  const etatsSelectionnables = offre && ETATS_POST_CANDIDATURE.includes(offre.etat)
+    ? ETATS_OFFRE.filter((etat) => etat !== 'NON_LU' && etat !== 'LU')
+    : ETATS_OFFRE
 
   return (
     <>
@@ -79,7 +85,7 @@ export function OffreDetailPage() {
                   onChange={handleEtatChange}
                   disabled={updating}
                 >
-                  {ETATS_OFFRE.map((etat) => (
+                  {etatsSelectionnables.map((etat) => (
                     <MenuItem key={etat} value={etat}>
                       {ETAT_LABELS[etat]}
                     </MenuItem>
