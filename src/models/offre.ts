@@ -20,6 +20,10 @@ export const ETAT_LABELS: Record<EtatOffre, string> = {
   RECALE: 'Recalé',
 }
 
+// États à partir desquels une candidature existe déjà : il n'est plus possible de
+// revenir à NON_LU/LU (voir TransitionEtatInvalideException côté backend).
+export const ETATS_POST_CANDIDATURE: EtatOffre[] = ['POSTULE', 'ENTRETIEN', 'ACCEPTE', 'RECALE']
+
 export interface Lieu {
   libelle?: string
   codeCommune?: string

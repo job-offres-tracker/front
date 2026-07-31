@@ -18,6 +18,7 @@ export function AppLayout() {
   const [parametresAnchorEl, setParametresAnchorEl] = useState<HTMLElement | null>(null)
 
   const offresActif = pathname.startsWith('/offres')
+  const candidaturesActif = pathname.startsWith('/candidatures')
   const parametresActif = pathname.startsWith('/parametres')
   const cvActif = pathname.startsWith('/cvs')
 
@@ -41,6 +42,10 @@ export function AppLayout() {
           <Stack direction="row" spacing={1} sx={{ flexGrow: 1 }}>
             <Button component={Link} to="/offres" color="inherit" sx={styleMenu(offresActif)}>
               Offres
+            </Button>
+
+            <Button component={Link} to="/candidatures" color="inherit" sx={styleMenu(candidaturesActif)}>
+              Candidatures
             </Button>
 
             <Button component={Link} to="/cvs" color="inherit" sx={styleMenu(cvActif)}>
@@ -68,6 +73,9 @@ export function AppLayout() {
             </MenuItem>
             <MenuItem component={Link} to="/parametres/cv" onClick={() => setParametresAnchorEl(null)}>
               CV
+            </MenuItem>
+            <MenuItem component={Link} to="/parametres/document-candidature" onClick={() => setParametresAnchorEl(null)}>
+              Documents de candidature
             </MenuItem>
           </Menu>
         </Toolbar>
