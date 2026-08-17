@@ -18,6 +18,10 @@ export function getCandidature(id: number): Promise<CandidatureDetail> {
   return request<CandidatureDetail>(`/candidatures/${id}`)
 }
 
+export function getCandidatureParOffre(idExterne: string): Promise<CandidatureDetail> {
+  return request<CandidatureDetail>(`/candidatures/par-offre/${encodeURIComponent(idExterne)}`)
+}
+
 export function ajouterEvenement(candidatureId: number, payload: EvenementRequest): Promise<Evenement> {
   return request<Evenement>(`/candidatures/${candidatureId}/evenements`, {
     method: 'POST',
