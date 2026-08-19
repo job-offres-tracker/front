@@ -4,6 +4,7 @@ import type { PagedResponse } from '@src/models/pagedResponse'
 import type { MettreAJourEtatRequest } from '@src/models/mettreAJourEtatRequest'
 import type { CreerOffreRequest } from '@src/models/creerOffreRequest'
 import type { BrouillonOffre } from '@src/models/brouillonOffre'
+import type { LettreMotivation } from '@src/models/lettreMotivation'
 
 export interface ConsulterOffresParams {
   page: number
@@ -47,5 +48,12 @@ export function importerOffre(url: string): Promise<BrouillonOffre> {
   return request<BrouillonOffre>('/offres/importer', {
     method: 'POST',
     body: JSON.stringify({ url }),
+  })
+}
+
+export function genererLettreMotivation(idExterne: string, cvNomUnique: string): Promise<LettreMotivation> {
+  return request<LettreMotivation>(`/offres/${encodeURIComponent(idExterne)}/generer-lettre-motivation`, {
+    method: 'POST',
+    body: JSON.stringify({ cvNomUnique }),
   })
 }

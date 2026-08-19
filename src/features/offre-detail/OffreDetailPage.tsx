@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import DOMPurify from 'dompurify'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -21,14 +22,22 @@ import { EtatChip } from '@src/components/EtatChip'
 import { formatDateCreation } from '@src/utils/formatDate'
 import { ETATS_OFFRE, ETATS_POST_CANDIDATURE, ETAT_LABELS, type EtatOffre } from '@src/models/offre'
 import { useOffreDetail } from './useOffreDetail'
+import { LettreMotivationDialog } from './LettreMotivationDialog'
 
 export function OffreDetailPage() {
   const { idExterne } = useParams<{ idExterne: string }>()
   const navigate = useNavigate()
-  const { offre, loading, error, notFound, updating, snackbar, changerEtat } = useOffreDetail(idExterne ?? '')
+  const { offre, loading, error, notFound, updating, snackbar, changerEtat, fetchOffre } = useOffreDetail(idExterne ?? '')
+  const [lettreDialogOuverte, setLettreDialogOuverte] = useState(false)
 
   const handleEtatChange = (event: SelectChangeEvent) => {
     changerEtat(event.target.value as EtatOffre)
+  }
+
+  const handlePostuleSuccess = async () => {
+    setLettreDialogOuverte(false)
+    await fetchOffre()
+    snackbar.showSuccess('Candidature créée avec le CV et la lettre de motivation')
   }
 
   // Une fois une candidature engagée (POSTULE/ENTRETIEN/ACCEPTE/RECALE), il n'est plus possible
@@ -76,22 +85,30 @@ export function OffreDetailPage() {
                 <EtatChip etat={offre.etat} />
               </Stack>
 
-              <FormControl size="small" sx={{ maxWidth: 260 }}>
-                <InputLabel id="etat-offre-label">État</InputLabel>
-                <Select
-                  labelId="etat-offre-label"
-                  label="État"
-                  value={offre.etat}
-                  onChange={handleEtatChange}
-                  disabled={updating}
-                >
-                  {etatsSelectionnables.map((etat) => (
-                    <MenuItem key={etat} value={etat}>
-                      {ETAT_LABELS[etat]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
+                <FormControl size="small" sx={{ maxWidth: 260 }}>
+                  <InputLabel id="etat-offre-label">État</InputLabel>
+                  <Select
+                    labelId="etat-offre-label"
+                    label="État"
+                    value={offre.etat}
+                    onChange={handleEtatChange}
+                    disabled={updating}
+                  >
+                    {etatsSelectionnables.map((etat) => (
+                      <MenuItem key={etat} value={etat}>
+                        {ETAT_LABELS[etat]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {(offre.etat === 'NON_LU' || offre.etat === 'LU') && (
+                  <Button variant="outlined" onClick={() => setLettreDialogOuverte(true)}>
+                    Créer une lettre de motivation
+                  </Button>
+                )}
+              </Stack>
 
               <Divider />
 
@@ -151,6 +168,15 @@ export function OffreDetailPage() {
           </Paper>
         )}
       </Container>
+
+      {offre && (
+        <LettreMotivationDialog
+          open={lettreDialogOuverte}
+          idExterne={offre.idExterne}
+          onClose={() => setLettreDialogOuverte(false)}
+          onPostuleSuccess={handlePostuleSuccess}
+        />
+      )}
 
       {snackbar.notificationNode}
     </>

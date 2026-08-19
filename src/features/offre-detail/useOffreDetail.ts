@@ -47,5 +47,5 @@ export function useOffreDetail(idExterne: string) {
     }
   }
 
-  return { offre, loading, error, notFound, updating, snackbar, changerEtat }
+  return { offre, loading, error, notFound, updating, snackbar, changerEtat, fetchOffre }
 }
