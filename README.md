@@ -139,7 +139,9 @@ Le projet utilise `@mui/material` mais avec **styled-components** comme moteur d
 
 ### État des listes synchronisé avec l'URL
 
-`features/offres/useOffres.ts` et `features/candidatures/useCandidatures.ts` pilotent leur état (filtre par état, page, taille de page, sélection) via les search params (`?etat=&page=&taille=`), initialisés depuis l'URL et la réécrivant à chaque changement. Ça permet de revenir sur une liste (ex. retour depuis le détail d'une offre ou d'une candidature) dans l'état exact où l'utilisateur l'avait laissée.
+Les hooks de liste initialisent leur état depuis les search params et le réécrivent à chaque changement, ce qui permet de revenir sur une liste (ex. retour depuis le détail d'une offre ou d'une candidature) dans l'état exact où l'utilisateur l'avait laissée :
+- `features/offres/useOffres.ts` pilote le filtre par état, la pagination et la sélection multiple via `useReducer(offresReducer, ...)` (`features/offres/offresReducer.ts`), synchronisé sur `?etat=&page=&taille=`.
+- `features/candidatures/useCandidatures.ts` ne synchronise que la page et la taille de page (simple `useState`, pas de filtre par état ni de sélection) sur `?page=&taille=`.
 
 ### Contenu HTML
 

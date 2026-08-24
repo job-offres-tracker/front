@@ -86,7 +86,9 @@ Uses `@mui/material` but with **styled-components** as the style engine instead 
 
 ### List state synchronized with the URL
 
-List hooks (e.g. `features/offres/useOffres.ts`, `features/candidatures/useCandidatures.ts`) drive their state (filters, page, page size, selection) from `useSearchParams`, initializing from and rewriting to query params (`?etat=&page=&taille=`) on every change. This lets users return to a list (e.g. navigating back from a detail page) in the exact state they left it.
+List hooks initialize their state from `useSearchParams` and rewrite it on every change, so users return to a list (e.g. navigating back from a detail page) in the exact state they left it:
+- `features/offres/useOffres.ts` drives filter (état), pagination, and multi-selection through `useReducer(offresReducer, ...)` (`features/offres/offresReducer.ts`), synced to `?etat=&page=&taille=`.
+- `features/candidatures/useCandidatures.ts` only syncs page/page size (plain `useState`, no état filter or selection) to `?page=&taille=`.
 
 ### HTML content
 
