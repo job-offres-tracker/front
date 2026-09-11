@@ -159,7 +159,7 @@ Les descriptions d'offres (potentiellement du HTML fourni par le backend) sont n
 | `/candidatures/:id` | `CandidatureDetailPage` | Détail d'une candidature : informations de l'offre liée, gestion des **événements** (entretien, relance...) avec création/édition, gestion des **documents** attachés (CV existant, fichier uploadé, ou texte libre — ex. lettre de motivation), téléchargement des documents |
 | `/cvs` | `CvsPage` | Liste des CV uploadés (nom, taille, date), upload d'un nouveau CV (PDF uniquement), visualisation et téléchargement |
 | `/cvs/:nomUnique` | `CvViewerPage` | Aperçu d'un CV dans un `iframe` (PDF), avec téléchargement |
-| `/parametres/recherche` | `ParametresRecherchePage` | Paramètres de la recherche automatique d'offres : type de contrat, mots-clés, communes ciblées (max 5, avec autocomplete) |
+| `/parametres/recherche` | `ParametresRecherchePage` | Paramètres de la recherche automatique d'offres : type de contrat, mots-clés, communes ciblées (max 20, avec autocomplete) |
 | `/parametres/cv` | `ParametresCvPage` | Taille maximale (en Mo) acceptée pour l'upload d'un CV |
 | `/parametres/document-candidature` | `ParametresDocumentCandidaturePage` | Taille maximale (en Mo) acceptée pour l'upload d'un document de candidature |
 

@@ -16,7 +16,7 @@ import { useRechercheCommune } from '@src/hooks/useRechercheCommune'
 import type { Commune } from '@src/models/commune'
 import { useParametresRecherche } from './useParametresRecherche'
 
-const NB_COMMUNES_MAX = 5
+const NB_COMMUNES_MAX = 20
 
 export function ParametresRecherchePage() {
   const { parametres, setParametres, loading, error, saving, enregistrer, snackbar } = useParametresRecherche()
@@ -159,7 +159,7 @@ export function ParametresRecherchePage() {
                     {...params}
                     label="Ajouter une commune"
                     size="small"
-                    helperText={communesAuMax ? '5 communes maximum atteint' : ' '}
+                    helperText={communesAuMax ? '20 communes maximum atteint' : ' '}
                   />
                 )}
               />
