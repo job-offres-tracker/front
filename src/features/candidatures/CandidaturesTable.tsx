@@ -7,8 +7,8 @@ import TableCell from '@mui/material/TableCell'
 import TablePagination from '@mui/material/TablePagination'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
-import { EtatChip } from '@src/components/EtatChip'
-import type { CandidatureListItem } from '@src/models/candidature'
+import { StatutCandidatureChip } from '@src/components/StatutCandidatureChip'
+import { TYPE_CANDIDATURE_LABELS, type CandidatureListItem } from '@src/models/candidature'
 
 interface CandidaturesTableProps {
   candidatures: CandidatureListItem[]
@@ -35,6 +35,7 @@ export function CandidaturesTable({
         <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
+              <TableCell>Type</TableCell>
               <TableCell>Intitulé</TableCell>
               <TableCell>État</TableCell>
               <TableCell>Entreprise</TableCell>
@@ -45,7 +46,7 @@ export function CandidaturesTable({
           <TableBody>
             {candidatures.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5}>
+                <TableCell colSpan={6}>
                   <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 3 }}>
                     Aucune candidature trouvée
                   </Typography>
@@ -59,13 +60,19 @@ export function CandidaturesTable({
                 onClick={() => onRowClick(candidature.id)}
                 sx={{ cursor: 'pointer' }}
               >
-                <TableCell>{candidature.intitule}</TableCell>
+                <TableCell>{TYPE_CANDIDATURE_LABELS[candidature.type]}</TableCell>
+                <TableCell>{candidature.type === 'OFFRE' ? candidature.intitule : '—'}</TableCell>
                 <TableCell>
-                  <EtatChip etat={candidature.etat} />
+                  <StatutCandidatureChip
+                    type={candidature.type}
+                    etat={candidature.type === 'OFFRE' ? candidature.etat : undefined}
+                    statutCandidatureSpontanee={candidature.type === 'SPONTANEE' ? candidature.statutCandidatureSpontanee : undefined}
+                    statutPriseDeContact={candidature.type === 'PRISE_DE_CONTACT' ? candidature.statutPriseDeContact : undefined}
+                  />
                 </TableCell>
                 <TableCell>{candidature.entreprise ?? '—'}</TableCell>
-                <TableCell>{candidature.lieu?.libelle ?? '—'}</TableCell>
-                <TableCell>{candidature.idExterne}</TableCell>
+                <TableCell>{candidature.type === 'OFFRE' ? (candidature.lieu?.libelle ?? '—') : '—'}</TableCell>
+                <TableCell>{candidature.type === 'OFFRE' ? candidature.idExterne : '—'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

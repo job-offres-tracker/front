@@ -14,6 +14,7 @@ import { ParametresDocumentCandidaturePage } from './features/parametres/candida
 import { CvsPage } from './features/cvs/CvsPage'
 import { CvViewerPage } from './features/cv-viewer/CvViewerPage'
 import { CandidaturesPage } from './features/candidatures/CandidaturesPage'
+import { CandidatureCreationPage } from './features/candidature-creation/CandidatureCreationPage'
 import { CandidatureDetailPage } from './features/candidature-detail/CandidatureDetailPage'
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
             <Route path="/offres/nouvelle" element={<OffreCreationPage />} />
             <Route path="/offres/:idExterne" element={<OffreDetailPage />} />
             <Route path="/candidatures" element={<CandidaturesPage />} />
+            <Route path="/candidatures/nouvelle" element={<CandidatureCreationPage />} />
             <Route path="/candidatures/:id" element={<CandidatureDetailPage />} />
             <Route path="/parametres/recherche" element={<ParametresRecherchePage />} />
             <Route path="/parametres/cv" element={<ParametresCvPage />} />
