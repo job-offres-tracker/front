@@ -99,7 +99,7 @@ src/
 │   ├── useSnackbar.tsx        état de notification succès/erreur, réutilisé par tous les hooks métier
 │   ├── usePrefersDarkMode.ts   préférence sombre/claire du système, pilote le thème dans App.tsx
 │   └── useRechercheCommune.ts   logique d'autocomplete de commune, partagée entre écrans
-├── components/              composants transverses (AppLayout, AppSnackbar, EtatChip, HtmlContentDialog)
+├── components/              composants transverses (AppLayout, AppSnackbar, EtatChip, StatutCandidatureChip, HtmlContentDialog)
 ├── utils/
 │   ├── formatDate.ts        formatage FR des dates
 │   └── formatFileSize.ts      formatage lisible d'une taille de fichier
@@ -108,7 +108,8 @@ src/
     ├── offre-detail/               détail d'une offre
     ├── offre-creation/              création manuelle / import IA
     ├── candidatures/                 liste paginée des candidatures
-    ├── candidature-detail/            détail d'une candidature (événements, documents)
+    ├── candidature-creation/           création d'une candidature spontanée ou d'une prise de contact
+    ├── candidature-detail/              détail d'une candidature (encart offre ou entreprise selon le type, événements, documents)
     ├── cvs/                             liste des CV / upload
     ├── cv-viewer/                        visualisation d'un CV (PDF)
     └── parametres/
@@ -155,8 +156,9 @@ Les descriptions d'offres (potentiellement du HTML fourni par le backend) sont n
 | `/offres` | `OffresPage` | Liste paginée des offres, filtrable par état (`EtatFilterBar`), sélection multiple + changement d'état groupé (`BulkUpdateBar`), bouton **Synchroniser** (déclenche `POST /api/v1/offres/synchroniser` côté backend — la même synchro France Travail que le planificateur automatique) |
 | `/offres/nouvelle` | `OffreCreationPage` | Création manuelle d'une offre. Un champ URL permet d'**importer** les champs depuis une page d'offre externe (ex. HelloWork) via l'extraction IA du backend (`POST /api/v1/offres/importer`) — les champs pré-remplissent le formulaire mais restent à vérifier avant validation. Le lieu utilise une autocomplete de commune (`GET /api/v1/communes`), avec repli en saisie libre si le service est indisponible |
 | `/offres/:idExterne` | `OffreDetailPage` | Détail d'une offre : informations complètes, changement d'état individuel, lien vers l'offre originale. La description est affichée via `HtmlContentDialog` |
-| `/candidatures` | `CandidaturesPage` | Liste paginée des candidatures (`CandidaturesTable`) |
-| `/candidatures/:id` | `CandidatureDetailPage` | Détail d'une candidature : informations de l'offre liée, gestion des **événements** (entretien, relance...) avec création/édition, gestion des **documents** attachés (CV existant, fichier uploadé, ou texte libre — ex. lettre de motivation), téléchargement des documents |
+| `/candidatures` | `CandidaturesPage` | Liste paginée des candidatures (`CandidaturesTable`, colonne **Type** : Offre / Candidature spontanée / Prise de contact), bouton **Nouvelle candidature** |
+| `/candidatures/nouvelle` | `CandidatureCreationPage` | Création d'une candidature **spontanée** ou d'une **prise de contact** (le type "Offre" n'est jamais créé manuellement ici — il reste déduit automatiquement quand une offre passe à l'état Postulé). Formulaire : nom et type d'entreprise (ESN / cabinet de recrutement / éditeur) obligatoires, URL du site optionnelle, statut initial (`POST /api/v1/candidatures/spontanee` ou `/prise-de-contact`) |
+| `/candidatures/:id` | `CandidatureDetailPage` | Détail d'une candidature : encart **Offre** (infos complètes, lien vers l'offre originale) ou encart **Entreprise** (nom, type, site) selon le type de la candidature, gestion des **événements** (entretien, relance...) avec création/édition, gestion des **documents** attachés (CV existant, fichier uploadé, ou texte libre — ex. lettre de motivation), téléchargement des documents |
 | `/cvs` | `CvsPage` | Liste des CV uploadés (nom, taille, date), upload d'un nouveau CV (PDF uniquement), visualisation et téléchargement |
 | `/cvs/:nomUnique` | `CvViewerPage` | Aperçu d'un CV dans un `iframe` (PDF), avec téléchargement |
 | `/parametres/recherche` | `ParametresRecherchePage` | Paramètres de la recherche automatique d'offres : type de contrat, mots-clés, communes ciblées (max 20, avec autocomplete) |

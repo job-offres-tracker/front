@@ -55,7 +55,7 @@ src/
 │   ├── useSnackbar.tsx        success/error notification state, reused by feature hooks
 │   ├── usePrefersDarkMode.ts   OS dark-mode preference, drives theme in App.tsx
 │   └── useRechercheCommune.ts  shared commune-autocomplete logic
-├── components/         cross-cutting components (AppLayout, AppSnackbar, EtatChip, HtmlContentDialog)
+├── components/         cross-cutting components (AppLayout, AppSnackbar, EtatChip, StatutCandidatureChip, HtmlContentDialog)
 ├── utils/
 │   └── formatDate.ts     FR date formatting
 └── features/            one folder per screen: page (JSX + MUI) + hook(s) (state + API calls)
@@ -63,7 +63,8 @@ src/
     ├── offre-detail/                   offer detail
     ├── offre-creation/                  manual creation / AI import
     ├── candidatures/                     paginated candidature (application) list
-    ├── candidature-detail/                candidature detail
+    ├── candidature-creation/              create a spontaneous application or a prise de contact
+    ├── candidature-detail/                 candidature detail (offer or company encart depending on type)
     ├── cvs/                                CV list / upload
     ├── cv-viewer/                           CV viewer
     └── parametres/
@@ -89,6 +90,10 @@ Uses `@mui/material` but with **styled-components** as the style engine instead 
 List hooks initialize their state from `useSearchParams` and rewrite it on every change, so users return to a list (e.g. navigating back from a detail page) in the exact state they left it:
 - `features/offres/useOffres.ts` drives filter (état), pagination, and multi-selection through `useReducer(offresReducer, ...)` (`features/offres/offresReducer.ts`), synced to `?etat=&page=&taille=`.
 - `features/candidatures/useCandidatures.ts` only syncs page/page size (plain `useState`, no état filter or selection) to `?page=&taille=`.
+
+### Candidature types
+
+A `Candidature` is one of three kinds, mirroring the backend's sealed domain model: `OFFRE` (reply to an existing job offer — never created manually, only ever produced by the backend when an offer's état moves to `POSTULE`), `SPONTANEE` (spontaneous application to a company), or `PRISE_DE_CONTACT` (contact initiated by a recruiter/headhunter or a company). `CandidatureListItem`/`CandidatureDetail` (`models/candidature.ts`) are TypeScript discriminated unions keyed on `type`, narrowed via `candidature.type === 'OFFRE'` checks — see `CandidatureDetailPage.tsx` (renders `OffreEncart` or `EntrepriseEncart`) and `CandidaturesTable.tsx`. `StatutCandidatureChip` (`components/`) picks the right status vocabulary/colors per type (`EtatOffre` for OFFRE, `StatutCandidatureSpontanee`/`StatutPriseDeContact` otherwise) — `EtatChip` stays OFFRE-only, still used as-is on `/offres`. Creation of the two manual types goes through `features/candidature-creation/` → `POST /api/v1/candidatures/spontanee` / `/prise-de-contact`.
 
 ### HTML content
 
