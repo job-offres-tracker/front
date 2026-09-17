@@ -1,4 +1,4 @@
-import type { EtatOffre, Lieu, Offre } from './offre'
+import type { Lieu, Offre } from './offre'
 
 export const TYPES_EVENEMENT = ['ENTRETIEN', 'RELANCE', 'MAIL'] as const
 export type TypeEvenement = (typeof TYPES_EVENEMENT)[number]
@@ -28,6 +28,16 @@ export const TYPE_ENTREPRISE_LABELS: Record<TypeEntreprise, string> = {
   ESN: 'ESN',
   CABINET_RECRUTEMENT: 'Cabinet de recrutement',
   EDITEUR: 'Éditeur',
+}
+
+export const STATUTS_CANDIDATURE_OFFRE = ['POSTULE', 'REFUSE', 'ACCEPTE', 'RECALE'] as const
+export type StatutCandidatureOffre = (typeof STATUTS_CANDIDATURE_OFFRE)[number]
+
+export const STATUT_CANDIDATURE_OFFRE_LABELS: Record<StatutCandidatureOffre, string> = {
+  POSTULE: 'Postulée',
+  REFUSE: 'Refusée',
+  ACCEPTE: 'Acceptée',
+  RECALE: 'Recalée',
 }
 
 export const STATUTS_CANDIDATURE_SPONTANEE = ['ENVOYE', 'REFUSE', 'ACCEPTE', 'RECALE'] as const
@@ -75,7 +85,13 @@ interface CandidatureListItemBase {
 }
 
 export type CandidatureListItem =
-  | (CandidatureListItemBase & { type: 'OFFRE'; idExterne: string; intitule: string; etat: EtatOffre; lieu?: Lieu })
+  | (CandidatureListItemBase & {
+      type: 'OFFRE'
+      idExterne: string
+      intitule: string
+      statutCandidatureOffre: StatutCandidatureOffre
+      lieu?: Lieu
+    })
   | (CandidatureListItemBase & { type: 'SPONTANEE'; statutCandidatureSpontanee: StatutCandidatureSpontanee })
   | (CandidatureListItemBase & { type: 'PRISE_DE_CONTACT'; statutPriseDeContact: StatutPriseDeContact })
 
@@ -87,7 +103,7 @@ interface CandidatureDetailBase {
 }
 
 export type CandidatureDetail =
-  | (CandidatureDetailBase & { type: 'OFFRE'; offre: Offre })
+  | (CandidatureDetailBase & { type: 'OFFRE'; offre: Offre; statutCandidatureOffre: StatutCandidatureOffre })
   | (CandidatureDetailBase & {
       type: 'SPONTANEE'
       nomEntreprise: string

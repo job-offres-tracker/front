@@ -63,12 +63,13 @@ export function CandidaturesTable({
                 <TableCell>{TYPE_CANDIDATURE_LABELS[candidature.type]}</TableCell>
                 <TableCell>{candidature.type === 'OFFRE' ? candidature.intitule : '—'}</TableCell>
                 <TableCell>
-                  <StatutCandidatureChip
-                    type={candidature.type}
-                    etat={candidature.type === 'OFFRE' ? candidature.etat : undefined}
-                    statutCandidatureSpontanee={candidature.type === 'SPONTANEE' ? candidature.statutCandidatureSpontanee : undefined}
-                    statutPriseDeContact={candidature.type === 'PRISE_DE_CONTACT' ? candidature.statutPriseDeContact : undefined}
-                  />
+                  {candidature.type === 'OFFRE' ? (
+                    <StatutCandidatureChip type="OFFRE" statut={candidature.statutCandidatureOffre} />
+                  ) : candidature.type === 'SPONTANEE' ? (
+                    <StatutCandidatureChip type="SPONTANEE" statut={candidature.statutCandidatureSpontanee} />
+                  ) : (
+                    <StatutCandidatureChip type="PRISE_DE_CONTACT" statut={candidature.statutPriseDeContact} />
+                  )}
                 </TableCell>
                 <TableCell>{candidature.entreprise ?? '—'}</TableCell>
                 <TableCell>{candidature.type === 'OFFRE' ? (candidature.lieu?.libelle ?? '—') : '—'}</TableCell>

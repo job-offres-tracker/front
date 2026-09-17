@@ -3,6 +3,7 @@ import type { PagedResponse } from '@src/models/pagedResponse'
 import type { CandidatureDetail, CandidatureListItem, DocumentCandidature, EvenementRequest, Evenement } from '@src/models/candidature'
 import type { CreerCandidatureSpontaneeRequest } from '@src/models/creerCandidatureSpontaneeRequest'
 import type { CreerPriseDeContactRequest } from '@src/models/creerPriseDeContactRequest'
+import type { ModifierStatutCandidatureRequest } from '@src/models/modifierStatutCandidatureRequest'
 
 export interface ConsulterCandidaturesParams {
   page: number
@@ -34,6 +35,14 @@ export function creerCandidatureSpontanee(payload: CreerCandidatureSpontaneeRequ
 export function creerPriseDeContact(payload: CreerPriseDeContactRequest): Promise<CandidatureDetail> {
   return request<CandidatureDetail>('/candidatures/prise-de-contact', {
     method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function modifierStatutCandidature(candidatureId: number, statut: string): Promise<CandidatureDetail> {
+  const payload: ModifierStatutCandidatureRequest = { statut }
+  return request<CandidatureDetail>(`/candidatures/${candidatureId}/statut`, {
+    method: 'PATCH',
     body: JSON.stringify(payload),
   })
 }

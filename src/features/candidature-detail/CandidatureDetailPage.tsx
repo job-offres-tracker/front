@@ -11,10 +11,22 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import type { SelectChangeEvent } from '@mui/material/Select'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AddIcon from '@mui/icons-material/Add'
 import { HtmlContentDialog } from '@src/components/HtmlContentDialog'
-import type { Evenement } from '@src/models/candidature'
+import {
+  STATUTS_CANDIDATURE_OFFRE,
+  STATUTS_CANDIDATURE_SPONTANEE,
+  STATUTS_PRISE_DE_CONTACT,
+  STATUT_CANDIDATURE_OFFRE_LABELS,
+  STATUT_CANDIDATURE_SPONTANEE_LABELS,
+  STATUT_PRISE_DE_CONTACT_LABELS,
+  type Evenement,
+} from '@src/models/candidature'
 import { useCandidatureDetail } from './useCandidatureDetail'
 import { OffreEncart } from './OffreEncart'
 import { EntrepriseEncart } from './EntrepriseEncart'
@@ -35,6 +47,7 @@ export function CandidatureDetailPage() {
     notFound,
     saving,
     snackbar,
+    changerStatut,
     creerEvenement,
     editerEvenement,
     ajouterCv,
@@ -51,6 +64,10 @@ export function CandidatureDetailPage() {
   const [cvDialogOuvert, setCvDialogOuvert] = useState(false)
   const [texteDialogOuvert, setTexteDialogOuvert] = useState(false)
   const [fichierEnAttente, setFichierEnAttente] = useState<File | null>(null)
+
+  const handleStatutChange = (event: SelectChangeEvent) => {
+    changerStatut(event.target.value)
+  }
 
   const handleOuvrirCreationEvenement = () => {
     setEvenementEnEdition(null)
@@ -105,6 +122,26 @@ export function CandidatureDetailPage() {
     }
   }
 
+  const optionsStatut = candidature?.type === 'OFFRE'
+    ? STATUTS_CANDIDATURE_OFFRE
+    : candidature?.type === 'SPONTANEE'
+      ? STATUTS_CANDIDATURE_SPONTANEE
+      : STATUTS_PRISE_DE_CONTACT
+
+  const labelsStatut: Record<string, string> = candidature?.type === 'OFFRE'
+    ? STATUT_CANDIDATURE_OFFRE_LABELS
+    : candidature?.type === 'SPONTANEE'
+      ? STATUT_CANDIDATURE_SPONTANEE_LABELS
+      : STATUT_PRISE_DE_CONTACT_LABELS
+
+  const statutActuel = candidature?.type === 'OFFRE'
+    ? candidature.statutCandidatureOffre
+    : candidature?.type === 'SPONTANEE'
+      ? candidature.statutCandidatureSpontanee
+      : candidature?.type === 'PRISE_DE_CONTACT'
+        ? candidature.statutPriseDeContact
+        : undefined
+
   return (
     <>
       <Container maxWidth="md" sx={{ py: 4 }}>
@@ -139,20 +176,46 @@ export function CandidatureDetailPage() {
             {candidature.type === 'OFFRE' ? (
               <OffreEncart
                 offre={candidature.offre}
+                statutCandidatureOffre={candidature.statutCandidatureOffre}
                 dateCandidature={candidature.dateCandidature}
                 onVoirDescription={() => setDescriptionOuverte(true)}
               />
-            ) : (
+            ) : candidature.type === 'SPONTANEE' ? (
               <EntrepriseEncart
-                type={candidature.type}
+                type="SPONTANEE"
                 nomEntreprise={candidature.nomEntreprise}
                 urlEntreprise={candidature.urlEntreprise}
                 typeEntreprise={candidature.typeEntreprise}
-                statutCandidatureSpontanee={candidature.type === 'SPONTANEE' ? candidature.statutCandidatureSpontanee : undefined}
-                statutPriseDeContact={candidature.type === 'PRISE_DE_CONTACT' ? candidature.statutPriseDeContact : undefined}
+                statut={candidature.statutCandidatureSpontanee}
+                dateCandidature={candidature.dateCandidature}
+              />
+            ) : (
+              <EntrepriseEncart
+                type="PRISE_DE_CONTACT"
+                nomEntreprise={candidature.nomEntreprise}
+                urlEntreprise={candidature.urlEntreprise}
+                typeEntreprise={candidature.typeEntreprise}
+                statut={candidature.statutPriseDeContact}
                 dateCandidature={candidature.dateCandidature}
               />
             )}
+
+            <FormControl size="small" sx={{ maxWidth: 260 }}>
+              <InputLabel id="statut-candidature-label">Statut</InputLabel>
+              <Select
+                labelId="statut-candidature-label"
+                label="Statut"
+                value={statutActuel ?? ''}
+                onChange={handleStatutChange}
+                disabled={saving}
+              >
+                {optionsStatut.map((statut) => (
+                  <MenuItem key={statut} value={statut}>
+                    {labelsStatut[statut]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             <Divider />
 

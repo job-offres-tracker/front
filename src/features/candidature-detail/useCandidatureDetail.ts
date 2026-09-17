@@ -6,6 +6,7 @@ import {
   ajouterEvenement,
   getCandidature,
   modifierEvenement,
+  modifierStatutCandidature,
   telechargerDocument,
 } from '@src/api/candidaturesApi'
 import { telechargerCv } from '@src/api/cvApi'
@@ -67,6 +68,9 @@ export function useCandidatureDetail(id: number) {
     }
   }
 
+  const changerStatut = (statut: string) =>
+    executerAction(() => modifierStatutCandidature(id, statut), 'Statut modifié')
+
   const creerEvenement = (payload: EvenementRequest) =>
     executerAction(() => ajouterEvenement(id, payload), 'Événement ajouté')
 
@@ -100,6 +104,7 @@ export function useCandidatureDetail(id: number) {
     notFound,
     saving,
     snackbar,
+    changerStatut,
     creerEvenement,
     editerEvenement,
     ajouterCv,
