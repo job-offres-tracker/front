@@ -25,6 +25,7 @@ import {
   STATUT_CANDIDATURE_OFFRE_LABELS,
   STATUT_CANDIDATURE_SPONTANEE_LABELS,
   STATUT_PRISE_DE_CONTACT_LABELS,
+  type CandidatureDetail,
   type Evenement,
 } from '@src/models/candidature'
 import { useCandidatureDetail } from './useCandidatureDetail'
@@ -36,6 +37,29 @@ import { DocumentsTable } from './DocumentsTable'
 import { DocumentCvDialog } from './DocumentCvDialog'
 import { DocumentFichierDialog } from './DocumentFichierDialog'
 import { DocumentTexteDialog } from './DocumentTexteDialog'
+
+function getStatutConfig(candidature: CandidatureDetail) {
+  switch (candidature.type) {
+    case 'OFFRE':
+      return {
+        options: STATUTS_CANDIDATURE_OFFRE,
+        labels: STATUT_CANDIDATURE_OFFRE_LABELS,
+        statutActuel: candidature.statutCandidatureOffre,
+      }
+    case 'SPONTANEE':
+      return {
+        options: STATUTS_CANDIDATURE_SPONTANEE,
+        labels: STATUT_CANDIDATURE_SPONTANEE_LABELS,
+        statutActuel: candidature.statutCandidatureSpontanee,
+      }
+    case 'PRISE_DE_CONTACT':
+      return {
+        options: STATUTS_PRISE_DE_CONTACT,
+        labels: STATUT_PRISE_DE_CONTACT_LABELS,
+        statutActuel: candidature.statutPriseDeContact,
+      }
+  }
+}
 
 export function CandidatureDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -122,25 +146,7 @@ export function CandidatureDetailPage() {
     }
   }
 
-  const optionsStatut = candidature?.type === 'OFFRE'
-    ? STATUTS_CANDIDATURE_OFFRE
-    : candidature?.type === 'SPONTANEE'
-      ? STATUTS_CANDIDATURE_SPONTANEE
-      : STATUTS_PRISE_DE_CONTACT
-
-  const labelsStatut: Record<string, string> = candidature?.type === 'OFFRE'
-    ? STATUT_CANDIDATURE_OFFRE_LABELS
-    : candidature?.type === 'SPONTANEE'
-      ? STATUT_CANDIDATURE_SPONTANEE_LABELS
-      : STATUT_PRISE_DE_CONTACT_LABELS
-
-  const statutActuel = candidature?.type === 'OFFRE'
-    ? candidature.statutCandidatureOffre
-    : candidature?.type === 'SPONTANEE'
-      ? candidature.statutCandidatureSpontanee
-      : candidature?.type === 'PRISE_DE_CONTACT'
-        ? candidature.statutPriseDeContact
-        : undefined
+  const statutConfig = candidature ? getStatutConfig(candidature) : null
 
   return (
     <>
@@ -205,13 +211,13 @@ export function CandidatureDetailPage() {
               <Select
                 labelId="statut-candidature-label"
                 label="Statut"
-                value={statutActuel ?? ''}
+                value={statutConfig?.statutActuel ?? ''}
                 onChange={handleStatutChange}
                 disabled={saving}
               >
-                {optionsStatut.map((statut) => (
+                {(statutConfig?.options ?? []).map((statut) => (
                   <MenuItem key={statut} value={statut}>
-                    {labelsStatut[statut]}
+                    {statutConfig?.labels[statut]}
                   </MenuItem>
                 ))}
               </Select>

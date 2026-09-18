@@ -7,6 +7,7 @@ import WorkOutlineIcon from '@mui/icons-material/WorkOutlined'
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
 import RecordVoiceOverOutlinedIcon from '@mui/icons-material/RecordVoiceOverOutlined'
 import { StatutCandidatureChip } from '@src/components/StatutCandidatureChip'
+import { formatDateCreation } from '@src/utils/formatDate'
 import {
   TYPE_CANDIDATURE_LABELS,
   type StatutCandidatureOffre,
@@ -29,6 +30,7 @@ const COULEURS_BORDURE: Record<TypeCandidature, string> = {
 
 type CandidatureTypeEncartProps = {
   titre: string
+  dateCandidature: string
   children: ReactNode
 } & (
   | { type: 'OFFRE'; statut: StatutCandidatureOffre }
@@ -37,7 +39,7 @@ type CandidatureTypeEncartProps = {
 )
 
 export function CandidatureTypeEncart(props: CandidatureTypeEncartProps) {
-  const { titre, children } = props
+  const { titre, dateCandidature, children } = props
   const Icon = ICONES[props.type]
 
   return (
@@ -63,6 +65,10 @@ export function CandidatureTypeEncart(props: CandidatureTypeEncartProps) {
             )}
           </Stack>
         </Stack>
+
+        <Typography variant="body2">
+          <strong>Date de candidature :</strong> {formatDateCreation(dateCandidature)}
+        </Typography>
 
         {children}
       </Stack>

@@ -37,7 +37,7 @@ export function CandidaturesTable({
             <TableRow>
               <TableCell>Type</TableCell>
               <TableCell>Intitulé</TableCell>
-              <TableCell>État</TableCell>
+              <TableCell>Statut</TableCell>
               <TableCell>Entreprise</TableCell>
               <TableCell>Lieu</TableCell>
               <TableCell>ID externe</TableCell>

@@ -6,7 +6,6 @@ import MuiLink from '@mui/material/Link'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import DescriptionIcon from '@mui/icons-material/Description'
 import { EtatChip } from '@src/components/EtatChip'
-import { formatDateCreation } from '@src/utils/formatDate'
 import type { StatutCandidatureOffre } from '@src/models/candidature'
 import type { Offre } from '@src/models/offre'
 import { CandidatureTypeEncart } from './CandidatureTypeEncart'
@@ -20,11 +19,8 @@ interface OffreEncartProps {
 
 export function OffreEncart({ offre, statutCandidatureOffre, dateCandidature, onVoirDescription }: OffreEncartProps) {
   return (
-    <CandidatureTypeEncart type="OFFRE" titre={offre.intitule} statut={statutCandidatureOffre}>
+    <CandidatureTypeEncart type="OFFRE" titre={offre.intitule} dateCandidature={dateCandidature} statut={statutCandidatureOffre}>
       <Stack spacing={1}>
-        <Typography variant="body2">
-          <strong>Date de candidature :</strong> {formatDateCreation(dateCandidature)}
-        </Typography>
         <Typography variant="body2" component="div" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <strong>État de l'offre :</strong> <EtatChip etat={offre.etat} />
         </Typography>

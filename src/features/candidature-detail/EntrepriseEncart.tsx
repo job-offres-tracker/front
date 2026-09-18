@@ -2,7 +2,6 @@ import Typography from '@mui/material/Typography'
 import Stack from '@mui/material/Stack'
 import MuiLink from '@mui/material/Link'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import { formatDateCreation } from '@src/utils/formatDate'
 import {
   TYPE_ENTREPRISE_LABELS,
   type StatutCandidatureSpontanee,
@@ -23,9 +22,6 @@ export function EntrepriseEncart(props: EntrepriseEncartProps) {
 
   const contenu = (
     <Stack spacing={1}>
-      <Typography variant="body2">
-        <strong>Date de candidature :</strong> {formatDateCreation(dateCandidature)}
-      </Typography>
       <Typography variant="body2">
         <strong>Type d'entreprise :</strong> {TYPE_ENTREPRISE_LABELS[typeEntreprise]}
       </Typography>
@@ -49,11 +45,16 @@ export function EntrepriseEncart(props: EntrepriseEncartProps) {
   )
 
   return props.type === 'SPONTANEE' ? (
-    <CandidatureTypeEncart type="SPONTANEE" titre={nomEntreprise} statut={props.statut}>
+    <CandidatureTypeEncart type="SPONTANEE" titre={nomEntreprise} dateCandidature={dateCandidature} statut={props.statut}>
       {contenu}
     </CandidatureTypeEncart>
   ) : (
-    <CandidatureTypeEncart type="PRISE_DE_CONTACT" titre={nomEntreprise} statut={props.statut}>
+    <CandidatureTypeEncart
+      type="PRISE_DE_CONTACT"
+      titre={nomEntreprise}
+      dateCandidature={dateCandidature}
+      statut={props.statut}
+    >
       {contenu}
     </CandidatureTypeEncart>
   )
