@@ -1,28 +1,13 @@
-export const ETATS_OFFRE = [
-  'NON_LU',
-  'LU',
-  'REFUSE',
-  'POSTULE',
-  'ENTRETIEN',
-  'ACCEPTE',
-  'RECALE',
-] as const
+export const ETATS_OFFRE = ['NON_LU', 'LU', 'POSTULE', 'REFUSE'] as const
 
 export type EtatOffre = (typeof ETATS_OFFRE)[number]
 
 export const ETAT_LABELS: Record<EtatOffre, string> = {
   NON_LU: 'Non lu',
   LU: 'Lu',
-  REFUSE: 'Refusé',
   POSTULE: 'Postulé',
-  ENTRETIEN: 'Entretien',
-  ACCEPTE: 'Accepté',
-  RECALE: 'Recalé',
+  REFUSE: 'Refusé',
 }
-
-// États à partir desquels une candidature existe déjà : il n'est plus possible de
-// revenir à NON_LU/LU (voir TransitionEtatInvalideException côté backend).
-export const ETATS_POST_CANDIDATURE: EtatOffre[] = ['POSTULE', 'ENTRETIEN', 'ACCEPTE', 'RECALE']
 
 export interface Lieu {
   libelle?: string

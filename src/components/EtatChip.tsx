@@ -6,10 +6,7 @@ const COULEURS: Record<EtatOffre, ChipProps['color']> = {
   NON_LU: 'default',
   LU: 'info',
   POSTULE: 'primary',
-  ENTRETIEN: 'warning',
-  ACCEPTE: 'success',
   REFUSE: 'error',
-  RECALE: 'error',
 }
 
 export function EtatChip({ etat }: { etat: EtatOffre }) {

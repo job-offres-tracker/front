@@ -20,7 +20,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import type { SelectChangeEvent } from '@mui/material/Select'
 import { EtatChip } from '@src/components/EtatChip'
 import { formatDateCreation } from '@src/utils/formatDate'
-import { ETATS_OFFRE, ETATS_POST_CANDIDATURE, ETAT_LABELS, type EtatOffre } from '@src/models/offre'
+import { ETATS_OFFRE, ETAT_LABELS, type EtatOffre } from '@src/models/offre'
 import { useOffreDetail } from './useOffreDetail'
 import { LettreMotivationDialog } from './LettreMotivationDialog'
 
@@ -40,9 +40,9 @@ export function OffreDetailPage() {
     snackbar.showSuccess('Candidature créée avec le CV et la lettre de motivation')
   }
 
-  // Une fois une candidature engagée (POSTULE/ENTRETIEN/ACCEPTE/RECALE), il n'est plus possible
-  // de revenir à NON_LU/LU (voir TransitionEtatInvalideException côté backend).
-  const etatsSelectionnables = offre && ETATS_POST_CANDIDATURE.includes(offre.etat)
+  // Une fois l'offre postulée, il n'est plus possible de revenir à NON_LU/LU
+  // (voir TransitionEtatInvalideException côté backend).
+  const etatsSelectionnables = offre && offre.etat === 'POSTULE'
     ? ETATS_OFFRE.filter((etat) => etat !== 'NON_LU' && etat !== 'LU')
     : ETATS_OFFRE
 

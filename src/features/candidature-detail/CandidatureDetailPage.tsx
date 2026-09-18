@@ -5,29 +5,61 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
 import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
-import MuiLink from '@mui/material/Link'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import type { SelectChangeEvent } from '@mui/material/Select'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import AddIcon from '@mui/icons-material/Add'
-import DescriptionIcon from '@mui/icons-material/Description'
-import { EtatChip } from '@src/components/EtatChip'
 import { HtmlContentDialog } from '@src/components/HtmlContentDialog'
-import { formatDateCreation } from '@src/utils/formatDate'
-import type { Evenement } from '@src/models/candidature'
+import {
+  STATUTS_CANDIDATURE_OFFRE,
+  STATUTS_CANDIDATURE_SPONTANEE,
+  STATUTS_PRISE_DE_CONTACT,
+  STATUT_CANDIDATURE_OFFRE_LABELS,
+  STATUT_CANDIDATURE_SPONTANEE_LABELS,
+  STATUT_PRISE_DE_CONTACT_LABELS,
+  type CandidatureDetail,
+  type Evenement,
+} from '@src/models/candidature'
 import { useCandidatureDetail } from './useCandidatureDetail'
+import { OffreEncart } from './OffreEncart'
+import { EntrepriseEncart } from './EntrepriseEncart'
 import { EvenementsTable } from './EvenementsTable'
 import { EvenementDialog } from './EvenementDialog'
 import { DocumentsTable } from './DocumentsTable'
 import { DocumentCvDialog } from './DocumentCvDialog'
 import { DocumentFichierDialog } from './DocumentFichierDialog'
 import { DocumentTexteDialog } from './DocumentTexteDialog'
+
+function getStatutConfig(candidature: CandidatureDetail) {
+  switch (candidature.type) {
+    case 'OFFRE':
+      return {
+        options: STATUTS_CANDIDATURE_OFFRE,
+        labels: STATUT_CANDIDATURE_OFFRE_LABELS,
+        statutActuel: candidature.statutCandidatureOffre,
+      }
+    case 'SPONTANEE':
+      return {
+        options: STATUTS_CANDIDATURE_SPONTANEE,
+        labels: STATUT_CANDIDATURE_SPONTANEE_LABELS,
+        statutActuel: candidature.statutCandidatureSpontanee,
+      }
+    case 'PRISE_DE_CONTACT':
+      return {
+        options: STATUTS_PRISE_DE_CONTACT,
+        labels: STATUT_PRISE_DE_CONTACT_LABELS,
+        statutActuel: candidature.statutPriseDeContact,
+      }
+  }
+}
 
 export function CandidatureDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -39,6 +71,7 @@ export function CandidatureDetailPage() {
     notFound,
     saving,
     snackbar,
+    changerStatut,
     creerEvenement,
     editerEvenement,
     ajouterCv,
@@ -55,6 +88,10 @@ export function CandidatureDetailPage() {
   const [cvDialogOuvert, setCvDialogOuvert] = useState(false)
   const [texteDialogOuvert, setTexteDialogOuvert] = useState(false)
   const [fichierEnAttente, setFichierEnAttente] = useState<File | null>(null)
+
+  const handleStatutChange = (event: SelectChangeEvent) => {
+    changerStatut(event.target.value)
+  }
 
   const handleOuvrirCreationEvenement = () => {
     setEvenementEnEdition(null)
@@ -109,6 +146,8 @@ export function CandidatureDetailPage() {
     }
   }
 
+  const statutConfig = candidature ? getStatutConfig(candidature) : null
+
   return (
     <>
       <Container maxWidth="md" sx={{ py: 4 }}>
@@ -140,64 +179,49 @@ export function CandidatureDetailPage() {
 
         {!loading && candidature && (
           <Stack spacing={3}>
-            <Paper variant="outlined" sx={{ p: 3 }}>
-              <Stack spacing={3}>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Typography variant="h5" component="h2" sx={{ flexGrow: 1 }}>
-                    {candidature.offre.intitule}
-                  </Typography>
-                  <EtatChip etat={candidature.offre.etat} />
-                </Stack>
+            {candidature.type === 'OFFRE' ? (
+              <OffreEncart
+                offre={candidature.offre}
+                statutCandidatureOffre={candidature.statutCandidatureOffre}
+                dateCandidature={candidature.dateCandidature}
+                onVoirDescription={() => setDescriptionOuverte(true)}
+              />
+            ) : candidature.type === 'SPONTANEE' ? (
+              <EntrepriseEncart
+                type="SPONTANEE"
+                nomEntreprise={candidature.nomEntreprise}
+                urlEntreprise={candidature.urlEntreprise}
+                typeEntreprise={candidature.typeEntreprise}
+                statut={candidature.statutCandidatureSpontanee}
+                dateCandidature={candidature.dateCandidature}
+              />
+            ) : (
+              <EntrepriseEncart
+                type="PRISE_DE_CONTACT"
+                nomEntreprise={candidature.nomEntreprise}
+                urlEntreprise={candidature.urlEntreprise}
+                typeEntreprise={candidature.typeEntreprise}
+                statut={candidature.statutPriseDeContact}
+                dateCandidature={candidature.dateCandidature}
+              />
+            )}
 
-                <Stack spacing={1}>
-                  <Typography variant="body2">
-                    <strong>Date de candidature :</strong> {formatDateCreation(candidature.dateCandidature)}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Entreprise :</strong> {candidature.offre.entreprise ?? '—'}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Type de contrat :</strong> {candidature.offre.typeContrat ?? '—'}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Salaire :</strong> {candidature.offre.salaire ?? '—'}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Lieu :</strong>{' '}
-                    {[candidature.offre.lieu?.libelle, candidature.offre.lieu?.adresse].filter(Boolean).join(' — ') || '—'}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Origine :</strong> {candidature.offre.provenance ?? '—'}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Offre originale :</strong>{' '}
-                    {candidature.offre.urlOrigine ? (
-                      <MuiLink
-                        href={candidature.offre.urlOrigine}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}
-                      >
-                        Voir l'offre originale
-                        <OpenInNewIcon fontSize="inherit" />
-                      </MuiLink>
-                    ) : (
-                      '—'
-                    )}
-                  </Typography>
-                </Stack>
-
-                <Box>
-                  <Button
-                    variant="outlined"
-                    startIcon={<DescriptionIcon />}
-                    onClick={() => setDescriptionOuverte(true)}
-                  >
-                    Voir la description
-                  </Button>
-                </Box>
-              </Stack>
-            </Paper>
+            <FormControl size="small" sx={{ maxWidth: 260 }}>
+              <InputLabel id="statut-candidature-label">Statut</InputLabel>
+              <Select
+                labelId="statut-candidature-label"
+                label="Statut"
+                value={statutConfig?.statutActuel ?? ''}
+                onChange={handleStatutChange}
+                disabled={saving}
+              >
+                {(statutConfig?.options ?? []).map((statut) => (
+                  <MenuItem key={statut} value={statut}>
+                    {statutConfig?.labels[statut]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             <Divider />
 
@@ -255,7 +279,7 @@ export function CandidatureDetailPage() {
         )}
       </Container>
 
-      {candidature && (
+      {candidature && candidature.type === 'OFFRE' && (
         <HtmlContentDialog
           open={descriptionOuverte}
           title="Description de l'offre"

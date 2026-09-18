@@ -55,7 +55,7 @@ src/
 │   ├── useSnackbar.tsx        success/error notification state, reused by feature hooks
 │   ├── usePrefersDarkMode.ts   OS dark-mode preference, drives theme in App.tsx
 │   └── useRechercheCommune.ts  shared commune-autocomplete logic
-├── components/         cross-cutting components (AppLayout, AppSnackbar, EtatChip, HtmlContentDialog)
+├── components/         cross-cutting components (AppLayout, AppSnackbar, EtatChip, StatutCandidatureChip, HtmlContentDialog)
 ├── utils/
 │   └── formatDate.ts     FR date formatting
 └── features/            one folder per screen: page (JSX + MUI) + hook(s) (state + API calls)
@@ -63,7 +63,8 @@ src/
     ├── offre-detail/                   offer detail
     ├── offre-creation/                  manual creation / AI import
     ├── candidatures/                     paginated candidature (application) list
-    ├── candidature-detail/                candidature detail
+    ├── candidature-creation/              create a spontaneous application or a prise de contact
+    ├── candidature-detail/                 candidature detail (offer or company encart depending on type)
     ├── cvs/                                CV list / upload
     ├── cv-viewer/                           CV viewer
     └── parametres/
@@ -89,6 +90,14 @@ Uses `@mui/material` but with **styled-components** as the style engine instead 
 List hooks initialize their state from `useSearchParams` and rewrite it on every change, so users return to a list (e.g. navigating back from a detail page) in the exact state they left it:
 - `features/offres/useOffres.ts` drives filter (état), pagination, and multi-selection through `useReducer(offresReducer, ...)` (`features/offres/offresReducer.ts`), synced to `?etat=&page=&taille=`.
 - `features/candidatures/useCandidatures.ts` only syncs page/page size (plain `useState`, no état filter or selection) to `?page=&taille=`.
+
+### Candidature types
+
+A `Candidature` is one of three kinds, mirroring the backend's sealed domain model: `OFFRE` (reply to an existing job offer — never created manually, only ever produced by the backend when an offer's état moves to `POSTULE`), `SPONTANEE` (spontaneous application to a company), or `PRISE_DE_CONTACT` (contact initiated by a recruiter/headhunter or a company). `CandidatureListItem`/`CandidatureDetail` (`models/candidature.ts`) are TypeScript discriminated unions keyed on `type`, narrowed via `candidature.type === 'OFFRE'` checks — see `CandidatureDetailPage.tsx` (renders `OffreEncart` or `EntrepriseEncart`) and `CandidaturesTable.tsx`. `StatutCandidatureChip` (`components/`) takes a `{ type, statut }` discriminated union prop (one variant per type, `statut` typed as `StatutCandidatureOffre`/`StatutCandidatureSpontanee`/`StatutPriseDeContact` accordingly — no optional props, no untyped fallback) and picks the right status vocabulary/colors. Creation of the two manual types goes through `features/candidature-creation/` → `POST /api/v1/candidatures/spontanee` / `/prise-de-contact`. `OffreEncart`/`EntrepriseEncart` both build on the shared `CandidatureTypeEncart` (`candidature-detail/`), which owns the per-type icon/border-color/overline-label chrome *and* renders the `StatutCandidatureChip` itself from a `{ type, statut }` prop — each encart only supplies its title, the matching `statut`, and body content as children. Passing a `type`+`statut` pair through several narrowing layers (`CandidatureDetailPage` → `OffreEncart`/`EntrepriseEncart` → `CandidatureTypeEncart` → `StatutCandidatureChip`) requires re-narrowing on the same object reference (`props.type === 'X'` then `props.statut`) at each layer — destructuring `type`/`statut` into separate local variables breaks the correlation TypeScript needs to type-check the union.
+
+### Offre état vs. candidature statut
+
+An `Offre`'s `etat` (`NON_LU`/`LU`/`POSTULE`/`REFUSE`, `EtatChip`, `EtatFilterBar`, `OffreDetailPage`) only tracks reading/processing of the job posting itself — `POSTULE` just means a linked candidature exists. Once a candidature exists (of any type), its own outcome is tracked separately via its `statut` (`StatutCandidatureOffre`/`StatutCandidatureSpontanee`/`StatutPriseDeContact`, each shaped as an initial value + `REFUSE`/`ACCEPTE`/`RECALE`), editable from `CandidatureDetailPage.tsx` via `PATCH /api/v1/candidatures/{id}/statut` (`useCandidatureDetail.changerStatut`). Don't conflate the two: an offer stays `POSTULE` forever once applied to, while the candidature's statut evolves through the hiring process.
 
 ### HTML content
 

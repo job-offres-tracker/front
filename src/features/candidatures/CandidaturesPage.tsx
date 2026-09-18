@@ -3,8 +3,10 @@ import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
 import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
+import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
-import { useNavigate } from 'react-router-dom'
+import AddIcon from '@mui/icons-material/Add'
+import { Link, useNavigate } from 'react-router-dom'
 import { CandidaturesTable } from './CandidaturesTable'
 import { useCandidatures } from './useCandidatures'
 
@@ -15,9 +17,14 @@ export function CandidaturesPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Stack spacing={3}>
-        <Typography variant="h5" component="h1">
-          Candidatures
-        </Typography>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+          <Typography variant="h5" component="h1" sx={{ flexGrow: 1 }}>
+            Candidatures
+          </Typography>
+          <Button component={Link} to="/candidatures/nouvelle" variant="outlined" startIcon={<AddIcon />}>
+            Nouvelle candidature
+          </Button>
+        </Stack>
 
         {liste.error && <Alert severity="error">{liste.error}</Alert>}
 
