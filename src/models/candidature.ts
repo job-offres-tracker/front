@@ -93,7 +93,12 @@ export type CandidatureListItem =
       lieu?: Lieu
     })
   | (CandidatureListItemBase & { type: 'SPONTANEE'; statutCandidatureSpontanee: StatutCandidatureSpontanee })
-  | (CandidatureListItemBase & { type: 'PRISE_DE_CONTACT'; statutPriseDeContact: StatutPriseDeContact })
+  | (CandidatureListItemBase & {
+      type: 'PRISE_DE_CONTACT'
+      statutPriseDeContact: StatutPriseDeContact
+      poste?: string
+      client?: string
+    })
 
 interface CandidatureDetailBase {
   id: number
@@ -116,6 +121,8 @@ export type CandidatureDetail =
       nomEntreprise: string
       urlEntreprise?: string
       typeEntreprise: TypeEntreprise
+      poste?: string
+      client?: string
       statutPriseDeContact: StatutPriseDeContact
     })
 

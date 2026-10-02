@@ -38,6 +38,8 @@ interface FormulaireCandidature {
   nomEntreprise: string
   urlEntreprise: string
   typeEntreprise: TypeEntreprise | ''
+  poste: string
+  client: string
   statut: StatutCandidatureSpontanee | StatutPriseDeContact | ''
   dateCandidature: string
 }
@@ -47,8 +49,14 @@ const FORMULAIRE_INITIAL: FormulaireCandidature = {
   nomEntreprise: '',
   urlEntreprise: '',
   typeEntreprise: '',
+  poste: '',
+  client: '',
   statut: '',
   dateCandidature: '',
+}
+
+function typeEntrepriseAutoriseClient(typeEntreprise: TypeEntreprise | ''): boolean {
+  return typeEntreprise === 'ESN' || typeEntreprise === 'CABINET_RECRUTEMENT'
 }
 
 export function CandidatureCreationPage() {
@@ -65,7 +73,8 @@ export function CandidatureCreationPage() {
   const typeEntrepriseInvalide = formulaire.typeEntreprise === ''
 
   const handleChange =
-    (champ: 'nomEntreprise' | 'urlEntreprise' | 'dateCandidature') => (event: ChangeEvent<HTMLInputElement>) => {
+    (champ: 'nomEntreprise' | 'urlEntreprise' | 'poste' | 'client' | 'dateCandidature') =>
+    (event: ChangeEvent<HTMLInputElement>) => {
       setFormulaire((prev) => ({ ...prev, [champ]: event.target.value }))
     }
 
@@ -75,7 +84,12 @@ export function CandidatureCreationPage() {
   }
 
   const handleTypeEntrepriseChange = (event: SelectChangeEvent) => {
-    setFormulaire((prev) => ({ ...prev, typeEntreprise: event.target.value as TypeEntreprise | '' }))
+    const typeEntreprise = event.target.value as TypeEntreprise | ''
+    setFormulaire((prev) => ({
+      ...prev,
+      typeEntreprise,
+      client: typeEntrepriseAutoriseClient(typeEntreprise) ? prev.client : '',
+    }))
   }
 
   const handleStatutChange = (event: SelectChangeEvent) => {
@@ -99,7 +113,12 @@ export function CandidatureCreationPage() {
     if (formulaire.type === 'SPONTANEE') {
       await soumettreSpontanee({ ...payload, statut: (formulaire.statut as StatutCandidatureSpontanee) || undefined })
     } else if (formulaire.type === 'PRISE_DE_CONTACT') {
-      await soumettrePriseDeContact({ ...payload, statut: (formulaire.statut as StatutPriseDeContact) || undefined })
+      await soumettrePriseDeContact({
+        ...payload,
+        poste: formulaire.poste.trim() || undefined,
+        client: formulaire.client.trim() || undefined,
+        statut: (formulaire.statut as StatutPriseDeContact) || undefined,
+      })
     }
   }
 
@@ -198,6 +217,28 @@ export function CandidatureCreationPage() {
                 </Select>
               </FormControl>
             </Stack>
+
+            {formulaire.type === 'PRISE_DE_CONTACT' && (
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField
+                  label="Poste"
+                  value={formulaire.poste}
+                  onChange={handleChange('poste')}
+                  helperText="Optionnel — poste visé par la prise de contact"
+                  fullWidth
+                />
+
+                {typeEntrepriseAutoriseClient(formulaire.typeEntreprise) && (
+                  <TextField
+                    label="Client"
+                    value={formulaire.client}
+                    onChange={handleChange('client')}
+                    helperText="Optionnel — client final pour lequel le poste est à pourvoir"
+                    fullWidth
+                  />
+                )}
+              </Stack>
+            )}
 
             <TextField
               label="Date de la candidature"

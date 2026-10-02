@@ -6,6 +6,7 @@ import {
   ajouterEvenement,
   getCandidature,
   modifierEvenement,
+  modifierPriseDeContact,
   modifierStatutCandidature,
   telechargerDocument,
 } from '@src/api/candidaturesApi'
@@ -13,6 +14,7 @@ import { telechargerCv } from '@src/api/cvApi'
 import { ApiError, messageErreur } from '@src/api/apiClient'
 import { useSnackbar } from '@src/hooks/useSnackbar'
 import type { CandidatureDetail, DocumentCandidature, EvenementRequest } from '@src/models/candidature'
+import type { ModifierPriseDeContactRequest } from '@src/models/modifierPriseDeContactRequest'
 
 function telechargerBlob(blob: Blob, nomFichier: string) {
   const url = URL.createObjectURL(blob)
@@ -71,6 +73,9 @@ export function useCandidatureDetail(id: number) {
   const changerStatut = (statut: string) =>
     executerAction(() => modifierStatutCandidature(id, statut), 'Statut modifié')
 
+  const modifierEntreprisePriseDeContact = (payload: ModifierPriseDeContactRequest) =>
+    executerAction(() => modifierPriseDeContact(id, payload), 'Prise de contact modifiée')
+
   const creerEvenement = (payload: EvenementRequest) =>
     executerAction(() => ajouterEvenement(id, payload), 'Événement ajouté')
 
@@ -105,6 +110,7 @@ export function useCandidatureDetail(id: number) {
     saving,
     snackbar,
     changerStatut,
+    modifierEntreprisePriseDeContact,
     creerEvenement,
     editerEvenement,
     ajouterCv,

@@ -10,6 +10,13 @@ import Typography from '@mui/material/Typography'
 import { StatutCandidatureChip } from '@src/components/StatutCandidatureChip'
 import { TYPE_CANDIDATURE_LABELS, type CandidatureListItem } from '@src/models/candidature'
 
+function intitulePriseDeContact(candidature: Extract<CandidatureListItem, { type: 'PRISE_DE_CONTACT' }>): string {
+  if (!candidature.poste) {
+    return '—'
+  }
+  return candidature.client ? `${candidature.poste} — ${candidature.client}` : candidature.poste
+}
+
 interface CandidaturesTableProps {
   candidatures: CandidatureListItem[]
   totalElements: number
@@ -61,7 +68,13 @@ export function CandidaturesTable({
                 sx={{ cursor: 'pointer' }}
               >
                 <TableCell>{TYPE_CANDIDATURE_LABELS[candidature.type]}</TableCell>
-                <TableCell>{candidature.type === 'OFFRE' ? candidature.intitule : '—'}</TableCell>
+                <TableCell>
+                  {candidature.type === 'OFFRE'
+                    ? candidature.intitule
+                    : candidature.type === 'PRISE_DE_CONTACT'
+                      ? intitulePriseDeContact(candidature)
+                      : '—'}
+                </TableCell>
                 <TableCell>
                   {candidature.type === 'OFFRE' ? (
                     <StatutCandidatureChip type="OFFRE" statut={candidature.statutCandidatureOffre} />
