@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -21,6 +21,10 @@ interface PriseDeContactDialogProps {
   onSubmit: (payload: ModifierPriseDeContactRequest) => void
 }
 
+type Formulaire = Record<keyof ModifierPriseDeContactRequest, string>
+
+const FORMULAIRE_VIDE: Formulaire = { urlEntreprise: '', poste: '', client: '' }
+
 function typeEntrepriseAutoriseClient(typeEntreprise: TypeEntreprise): boolean {
   return typeEntreprise === 'ESN' || typeEntreprise === 'CABINET_RECRUTEMENT'
 }
@@ -35,24 +39,35 @@ export function PriseDeContactDialog({
   onCancel,
   onSubmit,
 }: PriseDeContactDialogProps) {
-  const [urlEntrepriseSaisie, setUrlEntrepriseSaisie] = useState('')
-  const [posteSaisi, setPosteSaisi] = useState('')
-  const [clientSaisi, setClientSaisi] = useState('')
+  const [formulaire, setFormulaire] = useState<Formulaire>(FORMULAIRE_VIDE)
 
   useEffect(() => {
     if (open) {
-      setUrlEntrepriseSaisie(urlEntreprise ?? '')
-      setPosteSaisi(poste ?? '')
-      setClientSaisi(client ?? '')
+      setFormulaire({
+        urlEntreprise: urlEntreprise ?? '',
+        poste: poste ?? '',
+        client: client ?? '',
+      })
     }
   }, [open, urlEntreprise, poste, client])
 
+  const handleChange = (champ: keyof Formulaire) => (event: ChangeEvent<HTMLInputElement>) =>
+    setFormulaire((prev) => ({ ...prev, [champ]: event.target.value }))
+
   const handleSubmit = () => {
-    onSubmit({
-      urlEntreprise: urlEntrepriseSaisie.trim() || undefined,
-      poste: posteSaisi.trim() || undefined,
-      client: clientSaisi.trim() || undefined,
-    })
+    const initial: Formulaire = {
+      urlEntreprise: urlEntreprise ?? '',
+      poste: poste ?? '',
+      client: client ?? '',
+    }
+    const payload: ModifierPriseDeContactRequest = {}
+    for (const champ of Object.keys(formulaire) as (keyof Formulaire)[]) {
+      const valeur = formulaire[champ].trim()
+      if (valeur !== initial[champ]) {
+        payload[champ] = valeur || null
+      }
+    }
+    onSubmit(payload)
   }
 
   return (
@@ -62,21 +77,21 @@ export function PriseDeContactDialog({
         <Stack spacing={2} sx={{ mt: 1 }}>
           <TextField
             label="URL du site de l'entreprise"
-            value={urlEntrepriseSaisie}
-            onChange={(event) => setUrlEntrepriseSaisie(event.target.value)}
+            value={formulaire.urlEntreprise}
+            onChange={handleChange('urlEntreprise')}
             fullWidth
           />
           <TextField
             label="Poste"
-            value={posteSaisi}
-            onChange={(event) => setPosteSaisi(event.target.value)}
+            value={formulaire.poste}
+            onChange={handleChange('poste')}
             fullWidth
           />
           {typeEntrepriseAutoriseClient(typeEntreprise) && (
             <TextField
               label="Client"
-              value={clientSaisi}
-              onChange={(event) => setClientSaisi(event.target.value)}
+              value={formulaire.client}
+              onChange={handleChange('client')}
               fullWidth
             />
           )}
