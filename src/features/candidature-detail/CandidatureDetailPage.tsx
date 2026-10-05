@@ -33,10 +33,12 @@ import { OffreEncart } from './OffreEncart'
 import { EntrepriseEncart } from './EntrepriseEncart'
 import { EvenementsTable } from './EvenementsTable'
 import { EvenementDialog } from './EvenementDialog'
+import { PriseDeContactDialog } from './PriseDeContactDialog'
 import { DocumentsTable } from './DocumentsTable'
 import { DocumentCvDialog } from './DocumentCvDialog'
 import { DocumentFichierDialog } from './DocumentFichierDialog'
 import { DocumentTexteDialog } from './DocumentTexteDialog'
+import type { ModifierPriseDeContactRequest } from '@src/models/modifierPriseDeContactRequest'
 
 function getStatutConfig(candidature: CandidatureDetail) {
   switch (candidature.type) {
@@ -72,6 +74,7 @@ export function CandidatureDetailPage() {
     saving,
     snackbar,
     changerStatut,
+    modifierEntreprisePriseDeContact,
     creerEvenement,
     editerEvenement,
     ajouterCv,
@@ -83,6 +86,7 @@ export function CandidatureDetailPage() {
   const [descriptionOuverte, setDescriptionOuverte] = useState(false)
   const [evenementDialogOuvert, setEvenementDialogOuvert] = useState(false)
   const [evenementEnEdition, setEvenementEnEdition] = useState<Evenement | null>(null)
+  const [priseDeContactDialogOuvert, setPriseDeContactDialogOuvert] = useState(false)
 
   const [menuDocumentAncre, setMenuDocumentAncre] = useState<HTMLElement | null>(null)
   const [cvDialogOuvert, setCvDialogOuvert] = useState(false)
@@ -146,6 +150,13 @@ export function CandidatureDetailPage() {
     }
   }
 
+  const handleSoumettrePriseDeContact = async (payload: ModifierPriseDeContactRequest) => {
+    const succes = await modifierEntreprisePriseDeContact(payload)
+    if (succes) {
+      setPriseDeContactDialogOuvert(false)
+    }
+  }
+
   const statutConfig = candidature ? getStatutConfig(candidature) : null
 
   return (
@@ -201,8 +212,11 @@ export function CandidatureDetailPage() {
                 nomEntreprise={candidature.nomEntreprise}
                 urlEntreprise={candidature.urlEntreprise}
                 typeEntreprise={candidature.typeEntreprise}
+                poste={candidature.poste}
+                client={candidature.client}
                 statut={candidature.statutPriseDeContact}
                 dateCandidature={candidature.dateCandidature}
+                onEditer={() => setPriseDeContactDialogOuvert(true)}
               />
             )}
 
@@ -285,6 +299,19 @@ export function CandidatureDetailPage() {
           title="Description de l'offre"
           html={candidature.offre.description}
           onClose={() => setDescriptionOuverte(false)}
+        />
+      )}
+
+      {candidature && candidature.type === 'PRISE_DE_CONTACT' && (
+        <PriseDeContactDialog
+          open={priseDeContactDialogOuvert}
+          urlEntreprise={candidature.urlEntreprise}
+          poste={candidature.poste}
+          client={candidature.client}
+          typeEntreprise={candidature.typeEntreprise}
+          saving={saving}
+          onCancel={() => setPriseDeContactDialogOuvert(false)}
+          onSubmit={handleSoumettrePriseDeContact}
         />
       )}
 
